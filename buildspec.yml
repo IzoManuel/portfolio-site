@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo No installation needed for static site
+  build:
+    commands:
+      - echo No build step needed for static site
+  post_build:
+    commands:
+      - echo Build completed successfully.
+      - echo Deploying to S3...
+      - aws s3 sync . s3://test-bucket-manuel --delete --exclude "README.md" --exclude ".DS_Store"
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
