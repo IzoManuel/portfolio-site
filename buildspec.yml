@@ -11,7 +11,7 @@ phases:
     commands:
       - echo Build completed successfully.
       - echo Deploying to S3...
-      - aws s3 sync . s3://test-bucket-manuel --delete --exclude "README.md" --exclude ".DS_Store"
+      - aws s3 sync . s3://test-bucket-manuel/portfolio-site --delete --exclude "README.md" --exclude ".DS_Store"
 
 artifacts:
   files:
