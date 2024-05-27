@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Clone Repository') {
       steps {
-        git 'https://github.com/IzoManuel/portfolio-site.git'
+        git url: 'https://github.com/IzoManuel/portfolio-site.git', credentialsId: '21701bdd-7c41-4204-9974-db5e390c2cf9'
       }
     }
 
