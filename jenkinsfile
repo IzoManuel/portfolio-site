@@ -1,0 +1,28 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Clone Repository') {
+      steps {
+        git 'https://github.com/IzoManuel/portfolio-site.git'
+      }
+    }
+
+    stage('Echo Stage') {
+      steps {
+        echo 'Building the portfolio site...'
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sshagent(['deploy-ssh-key']) {
+          sh """
+            scp -o StrictHostKeyChecking=no -r * ubuntu@13.235.51.44:/var/www/html
+            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'bash /var/www/html/deploy.sh'
+          """
+        }
+      }
+    }
+  }
+}
