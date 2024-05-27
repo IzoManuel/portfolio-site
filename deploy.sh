@@ -1,3 +1,3 @@
 #!/bin/bash
-# sudo cp -r /home/ubuntu/portfolio-site/israel-ibrahim/* /usr/share/nginx/html/
+# Restart nginx
 sudo systemctl restart nginx
