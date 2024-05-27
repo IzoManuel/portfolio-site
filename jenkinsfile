@@ -18,8 +18,12 @@ pipeline {
       steps {
         sshagent(['deploy-ssh-key']) {
           sh """
+            echo "Before copying files:"
+            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'ls -l /usr/share/nginx/html/'
             scp -o StrictHostKeyChecking=no -r * ubuntu@13.235.51.44:/home/ubuntu/portfolio-site
             ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'bash /home/ubuntu/portfolio-site/deploy.sh'
+            echo "After copying files:"
+            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'ls -l /usr/share/nginx/html/'
           """
         }
       }
