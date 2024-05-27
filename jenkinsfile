@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Clone Repository') {
       steps {
-        git url: 'git@github.com:IzoManuel/portfolio-site.git', credentialsId: '21701bdd-7c41-4204-9974-db5e390c2cf9'
+        git url: 'git@github.com:IzoManuel/portfolio-site.git'
       }
     }
 
@@ -16,19 +16,12 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh """
-          echo "Before copying files:"
-          ssh -i ~/.ssh/key.pem -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'ls -l /usr/share/nginx/html/'
-
-          echo "Copying files:"
-          scp -i ~/.ssh/key.pem -o StrictHostKeyChecking=no -r * ubuntu@13.235.51.44:/home/ubuntu/portfolio-site
-
-          echo "Executing deploy script:"
-          ssh -i ~/.ssh/key.pem -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'bash /home/ubuntu/portfolio-site/deploy.sh'
-
-          echo "After copying files:"
-          ssh -i ~/.ssh/key.pem -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'ls -l /usr/share/nginx/html/'
-        """
+        sshagent(['deploy-ssh-key']) {
+          sh """
+            scp -o StrictHostKeyChecking=no -r * ubuntu@13.235.51.44:/home/ubuntu/portfolio-site
+            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'bash /home/ubuntu/portfolio-site/deploy.sh'
+          """
+        }
       }
     }
   }
