@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Clone Repository') {
       steps {
-        git url: 'git@github.com:IzoManuel/portfolio-site.git'
+        git url: 'https://github.com/IzoManuel/portfolio-site.git'
       }
     }
 
