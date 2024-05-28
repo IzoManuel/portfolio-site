@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    DEPLOY_IP = '13.235.51.44'
+    DEPLOY_IP = '3.108.227.83'
   }
 
   stages {
