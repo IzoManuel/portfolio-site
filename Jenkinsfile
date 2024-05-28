@@ -1,10 +1,14 @@
 pipeline {
   agent any
 
+  environment {
+    DEPLOY_IP = '13.235.51.44'
+  }
+
   stages {
     stage('Clone Repository') {
       steps {
-        git url: 'https://github.com/IzoManuel/portfolio-site.git',  branch: 'main'
+        git url: 'https://github.com/IzoManuel/portfolio-site.git', branch: 'main'
       }
     }
 
@@ -18,10 +22,20 @@ pipeline {
       steps {
         sshagent(['deploy-ssh-key']) {
           sh """
-            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'sudo chown -R ubuntu:ubuntu /var/www/html'
-            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'mkdir -p /var/www/html/portfolio-site'
-            scp -o StrictHostKeyChecking=no -r * ubuntu@13.235.51.44:/var/www/html/portfolio-site
-            ssh -o StrictHostKeyChecking=no ubuntu@13.235.51.44 'bash /var/www/html/portfolio-site/deploy.sh'
+            # Install Nginx if not installed
+            ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_IP} 'sudo apt-get update && sudo apt-get install -y nginx'
+
+            # Change ownership of the html directory
+            ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_IP} 'sudo chown -R ubuntu:ubuntu /var/www/html'
+
+            # Create the portfolio-site directory if it doesn't exist
+            ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_IP} 'mkdir -p /var/www/html/portfolio-site'
+
+            # Copy files to the remote server
+            scp -o StrictHostKeyChecking=no -r * ubuntu@${DEPLOY_IP}:/var/www/html/portfolio-site
+
+            # Reload Nginx to apply changes
+            ssh -o StrictHostKeyChecking=no ubuntu@${DEPLOY_IP} 'sudo systemctl restart nginx'
           """
         }
       }
